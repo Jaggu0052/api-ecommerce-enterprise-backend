@@ -1,0 +1,29 @@
+model Product {
+  id                String          @id @default(uuid())
+
+  categoryId        String
+  category          Category        @relation(fields: [categoryId], references: [id])
+
+  name              String
+
+  description       String?
+
+  price             Decimal         @db.Decimal(10, 2)
+
+  discountPrice     Decimal?        @db.Decimal(10, 2)
+
+  sku               String          @unique
+
+  stock             Int             @default(0)
+
+  image             String?
+
+  status            UserStatus      @default(ACTIVE)
+
+  inventory         Inventory?
+
+  orderItems        OrderItem[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}

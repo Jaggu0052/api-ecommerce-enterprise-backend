@@ -1,0 +1,23 @@
+model Salary {
+  id              String          @id @default(uuid())
+
+  employeeId      String
+  employee        Employee        @relation(fields: [employeeId], references: [id])
+
+  month           String
+
+  basicSalary     Decimal         @db.Decimal(10, 2)
+
+  allowances      Decimal         @db.Decimal(10, 2)
+
+  deductions      Decimal         @db.Decimal(10, 2)
+
+  totalSalary     Decimal         @db.Decimal(10, 2)
+
+  paidDate        DateTime?
+
+  status          PaymentStatus   @default(PENDING)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}

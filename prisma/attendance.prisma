@@ -1,0 +1,20 @@
+model Attendance {
+  id              String              @id @default(uuid())
+
+  employeeId      String
+  employee        Employee            @relation(fields: [employeeId], references: [id])
+
+  date            DateTime
+
+  checkIn         DateTime
+  checkOut        DateTime?
+
+  status          AttendanceStatus
+
+  location        String?
+
+  remarks         String?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}

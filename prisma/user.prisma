@@ -1,0 +1,30 @@
+model User {
+  id                String      @id @default(uuid())
+
+  roleId            String
+  role              Role        @relation(fields: [roleId], references: [id])
+
+  name              String
+
+  email             String      @unique
+  phone             String?     @unique
+
+  password          String
+
+  profileImage      String?
+
+  emailVerified     Boolean     @default(false)
+  phoneVerified     Boolean     @default(false)
+
+  status            UserStatus  @default(ACTIVE)
+
+  employee          Employee?
+  customer          Customer?
+
+  notifications     Notification[]
+  otpVerifications  OTPVerification[]
+  auditLogs         AuditLog[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}

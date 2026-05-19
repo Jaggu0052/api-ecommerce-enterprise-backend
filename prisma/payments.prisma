@@ -1,0 +1,18 @@
+model Payment {
+  id                  String            @id @default(uuid())
+
+  orderId             String            @unique
+  order               Order             @relation(fields: [orderId], references: [id])
+
+  amount              Decimal           @db.Decimal(10, 2)
+
+  method              PaymentMethod
+
+  transactionId       String?
+
+  status              PaymentStatus     @default(PENDING)
+
+  paidAt              DateTime?
+
+  createdAt           DateTime          @default(now())
+}
