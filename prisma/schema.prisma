@@ -1,7 +1,22 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-}
+/// import ./schema/base.prisma
+/// import ./schema/enums.prisma
+/// import ./schema/user.prisma
+/// import ./schema/role.prisma
+/// import ./schema/product.prisma
+/// import ./schema/orders.prisma
+/// import ./schema/order-items.prisma
+/// import ./schema/payments.prisma
+/// import ./schema/customer.prisma
+/// import ./schema/customer-address.prisma
+/// import ./schema/employee.prisma
+/// import ./schema/attendance.prisma
+/// import ./schema/salary.prisma
+/// import ./schema/inventory.prisma
+/// import ./schema/category.prisma
+/// import ./schema/notifications.prisma
+/// import ./schema/auditLog.prisma
+/// import ./schema/log-entry.prisma
+/// import ./schema/otp-verification.prisma
+/// import ./schema/shipment.prisma
+/// import ./schema/subscription.prisma
+/// import ./schema/subscription-plan.prisma
