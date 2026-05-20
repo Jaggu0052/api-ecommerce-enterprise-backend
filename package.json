@@ -15,7 +15,7 @@
     }
   },
   "scripts": {
-    "build": "npm run prisma:generate && npx nest build",
+    "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
