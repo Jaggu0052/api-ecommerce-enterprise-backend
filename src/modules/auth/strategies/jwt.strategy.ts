@@ -39,12 +39,14 @@ export class JwtStrategy extends PassportStrategy(
         },
       })
 
-    if (!user) {
+    if (!user || user.deletedAt || user.status !== 'ACTIVE') {
       throw new UnauthorizedException(
         'User not found',
       )
     }
 
-    return user
+    const { password, ...safeUser } = user
+
+    return safeUser
   }
 }

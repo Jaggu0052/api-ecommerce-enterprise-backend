@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
 import { Pool } from 'pg'
+import * as fs from 'fs'
 
 @Injectable()
 export class PrismaService
@@ -29,6 +30,25 @@ export class PrismaService
 
     super({
       adapter,
+      log: [
+        { emit: 'event', level: 'query' },
+        { emit: 'event', level: 'error' },
+        { emit: 'event', level: 'warn' },
+      ],
+    })
+
+    this.$on('query' as never, (event: any) => {
+      fs.mkdirSync('logs/prisma', { recursive: true })
+      fs.appendFile(
+        'logs/prisma/query.log',
+        `${JSON.stringify({
+          query: event.query,
+          params: event.params,
+          duration: event.duration,
+          timestamp: event.timestamp,
+        })}\n`,
+        () => undefined,
+      )
     })
   }
 

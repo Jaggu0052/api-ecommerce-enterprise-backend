@@ -1,0 +1,36 @@
+model Employee {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  employeeCode String @unique
+
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  designationId String
+  designation   Designation @relation(fields: [designationId], references: [id])
+
+  managerId String?
+  manager   Employee? @relation("ManagerRelation", fields: [managerId], references: [id])
+
+  subordinates Employee[] @relation("ManagerRelation")
+
+  joiningDate DateTime
+
+  salary Decimal @db.Decimal(10, 2)
+
+  verificationStatus VerificationStatus @default(PENDING)
+
+  status UserStatus @default(ACTIVE)
+
+  attendance Attendance[]
+  salaries   Salary[]
+
+  assignedOrders Order[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}

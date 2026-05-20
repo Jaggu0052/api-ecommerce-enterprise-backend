@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Optional,
   Param,
   Patch,
   Post,
@@ -18,7 +19,7 @@ import { UsersService } from './users.service'
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService,
+    @Optional() private readonly usersService: UsersService,
   ) {}
 
   @Post()

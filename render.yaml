@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: enterprise-ecommerce-workforce-api
+    env: docker
+    plan: starter
+    healthCheckPath: /api/v1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false

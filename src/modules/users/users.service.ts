@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common'
 
 import * as bcrypt from 'bcrypt'
@@ -14,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Optional() private readonly prisma: PrismaService,
   ) {}
 
   async create(dto: CreateUserDto) {
@@ -25,7 +26,7 @@ export class UsersService {
         },
       })
 
-    if (existingUser) {
+    if (existingUser && !existingUser.deletedAt) {
       throw new BadRequestException(
         'User already exists',
       )
@@ -53,10 +54,12 @@ export class UsersService {
         },
       })
 
+    const { password, ...safeUser } = user
+
     return {
       success: true,
       message: 'User created successfully',
-      data: user,
+      data: safeUser,
     }
   }
 
@@ -66,15 +69,21 @@ export class UsersService {
         include: {
           role: true,
         },
+        where: {
+          deletedAt: null,
+        },
 
         orderBy: {
           createdAt: 'desc',
         },
       })
 
+    const safeUsers = users.map(({ password, ...user }) => user)
+
     return {
       success: true,
-      data: users,
+      message: 'Users fetched successfully',
+      data: safeUsers,
     }
   }
 
@@ -83,6 +92,7 @@ export class UsersService {
       await this.prisma.user.findUnique({
         where: {
           id,
+          deletedAt: null,
         },
 
         include: {
@@ -96,9 +106,12 @@ export class UsersService {
       )
     }
 
+    const { password, ...safeUser } = user
+
     return {
       success: true,
-      data: user,
+      message: 'User fetched successfully',
+      data: safeUser,
     }
   }
 
@@ -110,6 +123,7 @@ export class UsersService {
       await this.prisma.user.findUnique({
         where: {
           id,
+          deletedAt: null,
         },
       })
 
@@ -119,23 +133,33 @@ export class UsersService {
       )
     }
 
+    const updateData =
+      dto.password
+        ? {
+            ...dto,
+            password: await bcrypt.hash(dto.password, 10),
+          }
+        : dto
+
     const updatedUser =
       await this.prisma.user.update({
         where: {
           id,
         },
 
-        data: dto,
+        data: updateData,
 
         include: {
           role: true,
         },
       })
 
+    const { password, ...safeUser } = updatedUser
+
     return {
       success: true,
       message: 'User updated successfully',
-      data: updatedUser,
+      data: safeUser,
     }
   }
 
@@ -144,6 +168,7 @@ export class UsersService {
       await this.prisma.user.findUnique({
         where: {
           id,
+          deletedAt: null,
         },
       })
 
@@ -153,9 +178,12 @@ export class UsersService {
       )
     }
 
-    await this.prisma.user.delete({
+    await this.prisma.user.update({
       where: {
         id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     })
 

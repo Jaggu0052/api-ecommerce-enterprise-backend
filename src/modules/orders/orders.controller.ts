@@ -1,4 +1,60 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Optional,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto'
+import { Roles } from '../auth/decorators/roles.decorator'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import { RolesGuard } from '../auth/guards/roles.guard'
+import { OrdersService } from './orders.service'
+
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('orders')
-export class OrdersController {}
+@UseGuards(JwtAuthGuard, RolesGuard)
+export class OrdersController {
+  constructor(@Optional() private readonly service: OrdersService) {}
+
+  @Roles('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CUSTOMER')
+  @Post()
+  create(@Body() dto: Record<string, unknown>) {
+    return this.service.create(dto)
+  }
+
+  @Roles('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'EMPLOYEE')
+  @Get()
+  findAll(@Query() query: PaginationQueryDto) {
+    return this.service.findAll(query)
+  }
+
+  @Roles('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'EMPLOYEE', 'CUSTOMER')
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id)
+  }
+
+  @Roles('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'EMPLOYEE')
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() dto: Record<string, unknown>,
+  ) {
+    return this.service.update(id, dto)
+  }
+
+  @Roles('SUPER_ADMIN', 'ADMIN')
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(id)
+  }
+}

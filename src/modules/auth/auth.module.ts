@@ -4,9 +4,19 @@ import { JwtModule } from '@nestjs/jwt'
 
 import { PassportModule } from '@nestjs/passport'
 
+import {
+  ConfigModule,
+  ConfigService,
+} from '@nestjs/config'
+
 import { PrismaModule } from 'src/prisma/prisma.module'
 
+import { RedisModule } from '../../redis/redis.module'
+
+import { LoggerModule } from '../../logs/logger.module'
+
 import { AuthController } from './auth.controller'
+
 import { AuthService } from './auth.service'
 
 import { JwtStrategy } from './strategies/jwt.strategy'
@@ -14,16 +24,31 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 @Module({
   imports: [
     PrismaModule,
+    RedisModule,
+    LoggerModule,
 
     PassportModule,
 
-    JwtModule.register({
-      secret:
-        process.env.JWT_SECRET,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
 
-      signOptions: {
-        expiresIn: '7d',
-      },
+      inject: [ConfigService],
+
+      useFactory: (
+        configService: ConfigService,
+      ) => ({
+        secret:
+          configService.get<string>(
+            'JWT_SECRET',
+          ),
+
+        signOptions: {
+          expiresIn:
+            (configService.get<string>(
+              'JWT_EXPIRES_IN',
+            ) || '7d') as any,
+        },
+      }),
     }),
   ],
 
@@ -31,7 +56,6 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 
   providers: [
     AuthService,
-
     JwtStrategy,
   ],
 

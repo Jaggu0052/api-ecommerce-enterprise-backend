@@ -4,9 +4,11 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Optional,
   Post,
   UseGuards,
 } from '@nestjs/common'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 import { CurrentUser } from './decorators/current-user.decorator'
 
@@ -17,10 +19,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard'
 
 import { AuthService } from './auth.service'
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
+    @Optional() private readonly authService: AuthService,
   ) {}
 
   @Post('register')
@@ -67,7 +70,78 @@ export class AuthController {
     }
   }
 
+  @Post('refresh-token')
+  async refreshToken(
+    @Body('refreshToken') refreshToken: string,
+  ) {
+    try {
+      return await this.authService.refreshToken(
+        refreshToken,
+      )
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message:
+            error.message ||
+            'Failed to refresh token',
+          error,
+        },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body('email') email: string,
+  ) {
+    try {
+      return await this.authService.forgotPassword(
+        email,
+      )
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message:
+            error.message ||
+            'Failed to start password reset',
+          error,
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body('userId') userId: string,
+    @Body('otp') otp: string,
+    @Body('password') password: string,
+  ) {
+    try {
+      return await this.authService.resetPassword(
+        userId,
+        otp,
+        password,
+      )
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message:
+            error.message ||
+            'Failed to reset password',
+          error,
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get('me')
   async me(
     @CurrentUser() user: any,
@@ -86,6 +160,7 @@ export class AuthController {
           message:
             error.message ||
             'Failed to fetch user profile',
+          error,
         },
         HttpStatus.BAD_REQUEST,
       )

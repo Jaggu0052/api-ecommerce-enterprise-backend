@@ -1,0 +1,20 @@
+model LogEntry {
+  id            String   @id @default(uuid())
+  requestId     String?
+  type          LogType
+  endpoint      String?
+  method        String?
+  requestBody   Json?
+  responseBody  Json?
+  message       String
+  stackTrace    String?
+  userId        String?
+  ipAddress     String?
+  executionTime Int?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([type])
+  @@index([requestId])
+  @@index([createdAt])
+}

@@ -1,0 +1,21 @@
+model SubscriptionPlan {
+  id String @id @default(uuid())
+
+  name String
+
+  description String?
+
+  durationDays Int
+
+  amount Decimal @db.Decimal(10, 2)
+
+  benefits Json?
+
+  isActive Boolean @default(true)
+
+  subscriptions Subscription[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}

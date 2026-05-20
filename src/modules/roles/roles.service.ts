@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common'
 
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -12,7 +13,7 @@ import { UpdateRoleDto } from './dto/update-role.dto'
 @Injectable()
 export class RolesService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Optional() private readonly prisma: PrismaService,
   ) {}
 
   async create(dto: CreateRoleDto) {
@@ -23,7 +24,7 @@ export class RolesService {
         },
       })
 
-    if (existingRole) {
+    if (existingRole && !existingRole.deletedAt) {
       throw new BadRequestException(
         'Role already exists',
       )
@@ -46,6 +47,9 @@ export class RolesService {
   async findAll() {
     const roles =
       await this.prisma.role.findMany({
+        where: {
+          deletedAt: null,
+        },
         orderBy: {
           createdAt: 'desc',
         },
@@ -62,6 +66,7 @@ export class RolesService {
       await this.prisma.role.findUnique({
         where: {
           id,
+          deletedAt: null,
         },
       })
 
@@ -85,6 +90,7 @@ export class RolesService {
       await this.prisma.role.findUnique({
         where: {
           id,
+          deletedAt: null,
         },
       })
 
@@ -124,9 +130,12 @@ export class RolesService {
       )
     }
 
-    await this.prisma.role.delete({
+    await this.prisma.role.update({
       where: {
         id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     })
 
