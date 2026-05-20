@@ -13,4 +13,4 @@ services:
         sync: false
       - key: REDIS_URL
         sync: false
-NPM_CONFIG_PRODUCTION=false npm ci --include=dev && npm run prisma:generate && npm run build
+NPM_CONFIG_PRODUCTION=false npm ci && npm run prisma:generate && npm run build
