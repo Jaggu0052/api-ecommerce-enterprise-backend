@@ -13,7 +13,7 @@ import { PrismaModule } from 'src/prisma/prisma.module'
 
 import { RedisModule } from '../../redis/redis.module'
 
-import { LoggerModule } from '../../logs-temp/logger.module'
+import { LoggerModule } from '../../logs/logger.module'
 
 import { AuthController } from './auth.controller'
 

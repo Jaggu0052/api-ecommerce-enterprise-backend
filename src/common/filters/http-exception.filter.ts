@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { EnterpriseLoggerService } from '../../logs-temp/logger.service'
+import { EnterpriseLoggerService } from '../../logs/logger.service'
 
 @Catch()
 export class HttpExceptionFilter

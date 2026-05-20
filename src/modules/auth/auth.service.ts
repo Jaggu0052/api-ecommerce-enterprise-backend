@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt'
 
 import { PrismaService } from 'src/prisma/prisma.service'
 import { RedisService } from '../../redis/redis.service'
-import { EnterpriseLoggerService } from '../../logs-temp/logger.service'
+import { EnterpriseLoggerService } from '../../logs/logger.service'
 
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
