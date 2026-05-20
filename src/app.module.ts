@@ -31,8 +31,8 @@ import { SubscriptionPlansModule } from './modules/subscription-plans/subscripti
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 import { OtpVerificationModule } from './modules/otp-verification/otp-verification.module';
 import { CustomerAddressModule } from './modules/customer-address/customer-address.module';
-import { LoggerModule } from './logs/logger.module';
-import { RequestLoggerMiddleware } from './logs/request-logger.middleware';
+import { LoggerModule } from './logs-temp/logger.module';
+import { RequestLoggerMiddleware } from './logs-temp/request-logger.middleware';
 
 @Module({
   imports: [
