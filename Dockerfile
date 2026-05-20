@@ -1,7 +1,8 @@
 FROM node:22-alpine AS deps
+ARG CACHEBUST=1
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN echo "cachebust=${CACHEBUST}" && npm ci --include=dev
 
 FROM node:22-alpine AS build
 WORKDIR /app
