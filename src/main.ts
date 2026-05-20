@@ -13,9 +13,13 @@ async function bootstrap() {
 
   app.use(helmet())
   app.enableCors({
-  origin: true,
-  credentials: true,
-})
+    origin:
+      process.env.CORS_ORIGIN?.split(
+        ',',
+      ) || [],
+
+    credentials: true,
+  })
   app.setGlobalPrefix('api/v1')
   app.useGlobalPipes(
     new ValidationPipe({
