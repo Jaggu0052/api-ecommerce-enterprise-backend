@@ -9,7 +9,7 @@ import {
   ConfigService,
 } from '@nestjs/config'
 
-import { PrismaModule } from 'src/prisma/prisma.module'
+import { PrismaModule } from '../../prisma/prisma.module'
 
 import { RedisModule } from '../../redis/redis.module'
 
