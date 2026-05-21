@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, RequestMethod } from '@nestjs/common'
 import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { EnterpriseLoggerService } from './logs/logger.service'
@@ -12,15 +12,18 @@ async function bootstrap() {
   const logger = app.get(EnterpriseLoggerService)
 
   app.use(helmet())
-  app.enableCors({
-    origin:
-      process.env.CORS_ORIGIN?.split(
-        ',',
-      ) || [],
+  const corsOrigins =
+    process.env.CORS_ORIGIN?.split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean) || []
 
+  app.enableCors({
+    origin: corsOrigins,
     credentials: true,
   })
-  app.setGlobalPrefix('api/v1')
+  app.setGlobalPrefix('api/v1', {
+    exclude: [{ path: '', method: RequestMethod.ALL }],
+  })
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
